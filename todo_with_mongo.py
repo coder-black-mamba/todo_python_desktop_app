@@ -6,6 +6,32 @@ from PyQt6.QtCore import Qt
 from qt_material import apply_stylesheet
 import sqlite3
 
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+
+# mongo credes
+# import MONGO_USER,MONGO_PASSWORD from "./.env.py"
+from env import *
+
+uri = f"mongodb+srv://{MONGO_USER}:{MONGO_PASSWORD}@freecluster.mwshian.mongodb.net/?retryWrites=true&w=majority&appName=freeCluster"
+
+print(uri)
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+# print(db)
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+db=client["todo_app"]
+todo_collection = db["todos"]
+
+
 class TodoApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -68,8 +94,13 @@ class TodoApp(QMainWindow):
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM tasks')
         tasks = cursor.fetchall()
-        for task in tasks:
-            self.task_list.addItem(str(task[0]) + ": " + task[1])
+        tasks2 = todo_collection.find()
+        for task in tasks2:
+            print(task["_id"])
+            self.task_list.addItem(str(task["task"]))
+
+        # for task in tasks:
+        #     self.task_list.addItem(str(task[0]) + ": " + task[1])
         conn.close()
 
     def add_task(self):
@@ -78,6 +109,7 @@ class TodoApp(QMainWindow):
             conn = sqlite3.connect('todos.db')
             cursor = conn.cursor()
             cursor.execute('INSERT INTO tasks (task) VALUES (?)', (task,))
+            todo_collection.insert_one({"task":task})
             conn.commit()
             conn.close()
             self.task_input.clear()

@@ -81,9 +81,19 @@ class WebApp(QMainWindow):
         layout = QVBoxLayout()
         layout.addWidget(self.browser)
 
+        # removing margins
+        # self.browser.setStyleSheet("QMainWindow { margin: 0px; }")
+        layout.setContentsMargins(0, 0, 0, 0)  # No margins
+        layout.setSpacing(0)  # No spacing
+
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
+
+
+
+
+
 
 # Run the application
 app = QApplication(sys.argv)

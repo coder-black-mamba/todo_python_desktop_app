@@ -2,9 +2,12 @@ import sys
 import os
 import sqlite3
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from PyQt6.QtWebChannel import QWebChannel
-from PyQt6.QtCore import QObject, pyqtSlot, pyqtProperty ,QUrl
+from PyQt6.QtCore import QObject, pyqtSlot, pyqtProperty ,QUrl 
+from PyQt6.QtWebEngineCore import QWebEngineSettings
+# debugging devtools
+os.environ['QTWEBENGINE_REMOTE_DEBUGGING'] = '9000'  # Set debugging port to 9000
 
 # Database setup
 def create_database():
@@ -42,10 +45,11 @@ class Backend(QObject):
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM students")
         students = cursor.fetchall()
-        print(students)
+        # Convert tuples to lists for JSON serialization
+        students_list = [list(student) for student in students]
+        print(students_list)  # Debug print
         conn.close()
-        return students
-
+        return students_list
 # Main PyQt Application
 class WebApp(QMainWindow):
     def __init__(self):
@@ -61,7 +65,13 @@ class WebApp(QMainWindow):
         self.backend = Backend()
         self.channel.registerObject("backend", self.backend)
         self.browser.page().setWebChannel(self.channel)
+        # self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.DeveloperExtrasEnabled, True)
+        # self.browser.settings().setAttribute(QWebEngineSettings.DeveloperExtrasEnabled, True)
+        # self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.DeveloperExtrasEnabled, True)
+        # self.browser.settings().setAttribute(QWebEngineSettings.DeveloperExtrasEnabled, True)
         
+
+
         print(os.path.abspath("index.html"))
         # Load HTML file
         # self.browser.setUrl(QUrl.fromLocalFile(os.path.join(__path__, "web/index.html")))  # Replace with correct path

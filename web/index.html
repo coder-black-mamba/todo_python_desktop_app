@@ -1,101 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Management</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1e1e1e;
-            color: white;
-            text-align: center;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid white;
-            padding: 10px;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background: #1e1e1e;
+        color: white;
+        text-align: center;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid white;
+        padding: 10px;
+      }
+      button {
+        background: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #45a049;
+      }
     </style>
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
     <script>
-        let backend;
-        
-        function connectBackend() {
-            new QWebChannel(qt.webChannelTransport, function(channel) {
-                backend = channel.objects.backend;
-                loadStudents();
-            });
+      let backend;
+
+      function connectBackend() {
+        new QWebChannel(qt.webChannelTransport, function (channel) {
+          backend = channel.objects.backend;
+          loadStudents();
+        });
+      }
+
+      function addStudent() {
+        let name = document.getElementById("name").value;
+        let age = document.getElementById("age").value;
+        let course = document.getElementById("course").value;
+        if (name && age && course) {
+          backend.addStudent(name, parseInt(age), course);
+          loadStudents();
         }
+      }
 
-        function addStudent() {
-            let name = document.getElementById("name").value;
-            let age = document.getElementById("age").value;
-            let course = document.getElementById("course").value;
-            if (name && age && course) {
-                backend.addStudent(name, parseInt(age), course);
-                loadStudents();
-            }
-        }
+      function loadStudents() {
+        let table = document.getElementById("studentTable");
 
-        function loadStudents() {
-            // backend.getStudents(function(students) {
-            //     let table = document.getElementById("studentTable");
-            //     console.log(table);
-                
-            //     table.innerHTML = "<tr><th>ID</th><th>Name</th><th>Age</th><th>Course</th></tr>";
-            //     students.forEach(student => {
-            //         let row = table.insertRow();
-            //         row.insertCell(0).innerText = student[0];
-            //         row.insertCell(1).innerText = student[1];
-            //         row.insertCell(2).innerText = student[2];
-            //         row.insertCell(3).innerText = student[3];
-            //     });
-            // });
-                let table = document.getElementById("studentTable");
-                table.innerHTML="Mara Khao";
-                console.log("Mara Kha");
-
-                backend.getStudents(function(students) {
-                    console.log(students);
-                    // students.forEach(student => {
-                    //     console.log(student);
-                    //     let row = table.insertRow();
-                    //     row.insertCell(0).innerText = student[0];
-                    //     row.insertCell(1).innerText = student[1];
-                    //     row.insertCell(2).innerText = student[2];
-                    //     row.insertCell(3).innerText = student[3];
-                    // });
-                });
-
-
-        }
+        backend.getStudents(function (students) {
+          // console.log(students);
+          // table.innerHTML=String(students);
+          students.forEach((student) => {
+            console.log(student);
+            let row = table.insertRow();
+            row.insertCell(0).innerText = student[0];
+            row.insertCell(1).innerText = student[1];
+            row.insertCell(2).innerText = student[2];
+            row.insertCell(3).innerText = student[3];
+          });
+        });
+      }
     </script>
-</head>
-<body onload="connectBackend()">
+  </head>
+  <body onload="connectBackend()">
     <h1>Student Management System</h1>
-    <input type="text" id="name" placeholder="Name">
-    <input type="number" id="age" placeholder="Age">
-    <input type="text" id="course" placeholder="Course">
+    <input type="text" id="name" placeholder="Name" />
+    <input type="number" id="age" placeholder="Age" />
+    <input type="text" id="course" placeholder="Course" />
     <button onclick="addStudent()">Add Student</button>
-    
+
     <table id="studentTable"></table>
-</body>
+  </body>
 </html>

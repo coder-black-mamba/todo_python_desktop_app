@@ -1,7 +1,7 @@
 import sys 
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLineEdit, QPushButton, QListWidget, 
-                             QMessageBox)
+                             QMessageBox,QListWidgetItem)
 from PyQt6.QtCore import Qt
 import sqlite3
 

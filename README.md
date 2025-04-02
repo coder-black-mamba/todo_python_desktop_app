@@ -8,4 +8,4 @@
 
 ## This is a desktop app that allows you to add tasks and mark them as done.
 
-# PEP 686 error motherfucker 
+# PEP 668 error motherfucker 

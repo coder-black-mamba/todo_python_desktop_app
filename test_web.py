@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 import sqlite3
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
@@ -41,6 +42,7 @@ class Backend(QObject):
 
     @pyqtSlot(result=list)
     def getStudents(self):
+        time.sleep(5)  # Simulate delay
         conn = sqlite3.connect("students.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM students")
